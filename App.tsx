@@ -4,18 +4,75 @@ import { PlantData, PlantStage, YalomCategory } from './types';
 import { YALOM_FACTORS } from './constants';
 import { PlantIcon } from './components/PlantIcon';
 import { Modal } from './components/Modal';
+import { SoundController } from './components/SoundController';
 import { generateFollowUpQuestion } from './services/geminiService';
 
-// Wildlife Component - Charley Harper style (Geometric minimal realism)
+// Scaffolding: Permanent "Ancient" trees and vines that frame the garden
+const JungleScaffolding: React.FC = () => (
+  <div className="absolute inset-0 pointer-events-none z-10 overflow-hidden">
+    {/* Left Frame Tree - Dark Silhouette */}
+    <svg className="absolute top-0 left-0 h-full w-[20%] text-[#1a350d] opacity-90" preserveAspectRatio="none" viewBox="0 0 100 800">
+       <path d="M0 0 H 60 Q 40 200 80 400 Q 20 600 90 800 H 0 Z" fill="currentColor" />
+       {/* Branch */}
+       <path d="M40 200 Q 150 250 180 220" stroke="currentColor" strokeWidth="20" fill="none" strokeLinecap="round"/>
+    </svg>
+
+    {/* Right Frame Tree - Dark Silhouette */}
+    <svg className="absolute top-0 right-0 h-full w-[15%] text-[#1a350d] opacity-90" preserveAspectRatio="none" viewBox="0 0 100 800">
+       <path d="M100 0 H 20 Q 80 200 40 500 Q 90 700 30 800 H 100 Z" fill="currentColor" />
+       {/* Branch */}
+       <path d="M60 150 Q -50 200 -80 160" stroke="currentColor" strokeWidth="15" fill="none" strokeLinecap="round"/>
+    </svg>
+
+    {/* Hanging Vines - Scaffolding for the top */}
+    <div className="absolute top-0 left-0 w-full h-[30%] text-[#2D5016]">
+       <svg className="w-full h-full" viewBox="0 0 1000 300" preserveAspectRatio="none">
+         {/* Vine 1 */}
+         <path d="M100 0 Q 120 100 100 200" stroke="currentColor" strokeWidth="4" fill="none" />
+         <circle cx="100" cy="200" r="5" fill="#E8B923" />
+         {/* Vine 2 */}
+         <path d="M300 0 Q 280 150 320 250" stroke="currentColor" strokeWidth="3" fill="none" />
+         <path d="M320 250 L 310 270 L 330 270 Z" fill="#C65D3B" />
+         {/* Vine 3 */}
+         <path d="M600 0 Q 650 120 620 220" stroke="currentColor" strokeWidth="5" fill="none" />
+         {/* Vine 4 */}
+         <path d="M850 0 Q 820 180 880 280" stroke="currentColor" strokeWidth="4" fill="none" />
+         <circle cx="880" cy="280" r="8" fill="#E8B923" />
+       </svg>
+    </div>
+  </div>
+);
+
+// Wildlife Component - Interactive and Permanent Residents
 const GardenWildlife: React.FC<{ plantCount: number }> = ({ plantCount }) => {
   return (
-    <div className="absolute inset-0 pointer-events-none z-0 overflow-visible">
+    <div className="absolute inset-0 pointer-events-none z-10 overflow-visible">
       
+      {/* PERMANENT GUARDIAN: The Wise Owl (Always present) */}
+      <div className="absolute top-[18%] left-[8%] animate-sway-slow origin-bottom">
+         <svg width="80" height="100" viewBox="0 0 80 100">
+            {/* Body */}
+            <ellipse cx="40" cy="50" rx="30" ry="40" fill="#5C4033" />
+            {/* Wings */}
+            <path d="M10 50 Q 0 70 20 80" fill="#2D5016" />
+            <path d="M70 50 Q 80 70 60 80" fill="#2D5016" />
+            {/* Eyes */}
+            <circle cx="28" cy="40" r="10" fill="#E8B923" />
+            <circle cx="52" cy="40" r="10" fill="#E8B923" />
+            <circle cx="28" cy="40" r="3" fill="#1c1917" />
+            <circle cx="52" cy="40" r="3" fill="#1c1917" />
+            {/* Beak */}
+            <path d="M40 50 L 35 55 L 45 55 Z" fill="#C65D3B" />
+            {/* Ear Tufts */}
+            <path d="M20 20 L 15 5 L 35 20" fill="#5C4033" />
+            <path d="M60 20 L 65 5 L 45 20" fill="#5C4033" />
+         </svg>
+      </div>
+
       {/* 1+ Plants: Geometric Butterflies */}
       {plantCount >= 1 && (
         <>
-          <div className="absolute top-[25%] left-[15%] animate-float" style={{ animationDuration: '9s' }}>
-             {/* Harper Style Butterfly: Perfect Triangles */}
+          <div className="absolute top-[25%] left-[25%] animate-float" style={{ animationDuration: '9s' }}>
              <svg width="60" height="60" viewBox="0 0 60 60">
                 <path d="M30 30 L5 10 L5 50 Z" fill="#E8B923" />
                 <path d="M30 30 L55 10 L55 50 Z" fill="#E8B923" />
@@ -27,38 +84,28 @@ const GardenWildlife: React.FC<{ plantCount: number }> = ({ plantCount }) => {
 
       {/* 3+ Plants: Minimalist Toucan */}
       {plantCount >= 3 && (
-        <div className="absolute top-[15%] right-[5%] z-10">
+        <div className="absolute top-[15%] right-[5%] z-10 animate-sway">
            <svg width="120" height="120" viewBox="0 0 100 100">
-              {/* Body: Black shape */}
               <path d="M50 20 Q 80 20 80 50 Q 80 80 50 80 L 50 20" fill="#1c1917" />
-              {/* Beak: Geometric colored bands */}
               <path d="M50 25 L 10 35 L 50 45" fill="#C65D3B" />
               <path d="M20 32 L 30 30 L 30 40 Z" fill="#E8B923" />
-              {/* Eye: Perfect Circle */}
               <circle cx="60" cy="35" r="8" fill="white" />
               <circle cx="60" cy="35" r="3" fill="#1c1917" />
-              {/* Branch */}
-              <rect x="40" y="80" width="60" height="5" fill="#5C4033" />
            </svg>
         </div>
       )}
 
       {/* 5+ Plants: Harper Style Tiger (Hidden in grass) */}
       {plantCount >= 5 && (
-        <div className="absolute bottom-[25%] left-[5%] z-0 opacity-90">
+        <div className="absolute bottom-[10%] left-[5%] z-0 opacity-90">
            <svg width="200" height="150" viewBox="0 0 200 150">
-             {/* Orange Body Block */}
              <rect x="50" y="50" width="100" height="60" rx="30" fill="#C65D3B" />
-             {/* Black Stripes: Vertical Triangles */}
              <path d="M70 50 L80 80 L90 50" fill="#1c1917" />
              <path d="M100 50 L110 90 L120 50" fill="#1c1917" />
              <path d="M130 50 L140 80 L150 50" fill="#1c1917" />
-             {/* Head Circle */}
              <circle cx="160" cy="60" r="25" fill="#C65D3B" />
-             {/* Ears */}
              <path d="M145 40 L155 20 L165 40" fill="#1c1917" />
              <path d="M165 40 L175 20 L185 40" fill="#1c1917" />
-             {/* Eyes - Green Geometry */}
              <circle cx="155" cy="55" r="3" fill="#2D5016" />
              <circle cx="170" cy="55" r="3" fill="#2D5016" />
            </svg>
@@ -68,15 +115,14 @@ const GardenWildlife: React.FC<{ plantCount: number }> = ({ plantCount }) => {
   );
 };
 
-// Rousseau Style Scenery - Flat layers of depth
+// Rousseau Style Scenery - Background Layers
 const RousseauScenery: React.FC = () => (
   <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
     {/* Background: Warm Cream */}
     <div className="absolute inset-0 bg-[#F4EBD9]" />
     
-    {/* Sun: Big Geometric Circle (Harper Style) */}
+    {/* Sun: Big Geometric Circle (Harper Style) - Restored with Rays */}
     <div className="absolute top-[5%] right-[10%] w-32 h-32 bg-[#E8B923] rounded-full opacity-80" />
-    {/* Sun Rays */}
     <div className="absolute top-[5%] right-[10%] w-32 h-32">
        <svg viewBox="0 0 100 100" className="w-full h-full overflow-visible animate-[spin_20s_linear_infinite]">
          {[...Array(12)].map((_, i) => (
@@ -89,7 +135,7 @@ const RousseauScenery: React.FC = () => (
          ))}
        </svg>
     </div>
-
+    
     {/* Layer 1: Distant Pale Foliage */}
     <div className="absolute bottom-[30%] w-full h-[50%] text-[#2D5016] opacity-10">
        <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 100 100">
@@ -100,7 +146,6 @@ const RousseauScenery: React.FC = () => (
     {/* Layer 2: Midground Flat Shapes (Rousseau Bushes) */}
     <div className="absolute bottom-0 w-full h-[40%] text-[#2D5016] opacity-20">
        <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 200 100">
-          {/* Repeated leaf shapes */}
           <ellipse cx="20" cy="100" rx="30" ry="60" fill="currentColor" />
           <ellipse cx="60" cy="120" rx="40" ry="70" fill="currentColor" />
           <ellipse cx="100" cy="100" rx="30" ry="50" fill="currentColor" />
@@ -109,8 +154,15 @@ const RousseauScenery: React.FC = () => (
        </svg>
     </div>
 
-    {/* Layer 3: Foreground Ground Line (Geometric) */}
-    <div className="absolute bottom-0 w-full h-[15%] bg-[#5C4033] opacity-10" />
+    {/* Layer 3: Foreground Ground Line (Refined Soil) */}
+    <div className="absolute bottom-0 w-full h-[18%] z-0">
+        <svg className="w-full h-full" preserveAspectRatio="none" viewBox="0 0 1200 120">
+            {/* Darker Earth Layer */}
+            <path d="M0 120 V 40 C 200 30 400 60 600 40 C 800 20 1000 50 1200 30 V 120 Z" fill="#4A3728" opacity="0.2" />
+            {/* Lighter Earth Layer */}
+            <path d="M0 120 V 60 C 300 80 500 40 800 60 C 1000 80 1100 50 1200 70 V 120 Z" fill="#5C4033" opacity="0.15" />
+        </svg>
+    </div>
   </div>
 );
 
@@ -156,8 +208,9 @@ const App: React.FC = () => {
       id: uuidv4(),
       category: plantingCategory,
       stage: PlantStage.Seed,
-      x: 5 + Math.random() * 90, 
-      y: 45 + Math.random() * 40, // Deeper in the foliage layers
+      // Focus planting in central area so massive scaling doesn't go off-screen immediately
+      x: 10 + Math.random() * 80, 
+      y: 35 + Math.random() * 35, 
       reflections: [{
         question: YALOM_FACTORS[plantingCategory].question,
         answer: inputText,
@@ -208,6 +261,7 @@ const App: React.FC = () => {
       
       {/* Background Layers */}
       <RousseauScenery />
+      <JungleScaffolding /> {/* Permanent Scaffolding Layer */}
       <GardenWildlife plantCount={plants.length} />
 
       {/* Header UI - Paper Card Style */}
@@ -227,13 +281,16 @@ const App: React.FC = () => {
              ?
            </button>
         </div>
+        
+        {/* Sound Controller in Header */}
+        <SoundController />
       </header>
 
       {/* Garden Interactive Area */}
       <main className="flex-grow relative w-full h-full">
         {plants.length === 0 && (
           <div className="absolute inset-0 flex items-center justify-center z-10 pointer-events-none">
-             <div className="text-center p-8 max-w-sm paper-panel rotate-1 text-[#5C4033]">
+             <div className="text-center p-8 max-w-sm paper-panel rotate-1 text-[#5C4033] bg-[#F4EBD9]/95">
                 <h3 className="serif-font text-2xl font-bold mb-2">The Ground is Fertile</h3>
                 <p className="text-[#5C4033] mb-4 font-medium italic">"Every blade of grass has its angel that bends over it and whispers, 'Grow, grow.'"</p>
                 <div className="text-3xl animate-bounce text-[#C65D3B]">↓</div>
